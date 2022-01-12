@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" onclick="focusText()">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Prompt</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+
+<body onload="focusText()">
+
+    <main id="console">
+        <section id="console-body">
+            <p class="text-glow">This is the console body</p>
+        </section>
+        <form id="console-input" onsubmit="return consoleMain()">
+            <span>> </span>
+            <input type="text" id="text-input">
+        </form>
+    </main>
+
+    <!-- JS -->
+    <script src="js/main.js"></script>
+
+</body>
+</html>
