@@ -9,6 +9,13 @@ let commandDefinitions = [
     'ls: lists possible items to display'
 ]
 
+let directoryDefinitions = [
+    'about: displays general information',
+    'portfolio: presents a list of projects',
+    'blog: presents a list of blog entries',
+    'contact: presents contact information'
+]
+
 //=====Main Function START=====
 function consoleMain(){
 
@@ -63,24 +70,26 @@ function consoleMain(){
                 )
             );
         })
+    }
 
+    //=====List Items=====
+    else if(input === 'ls' || input === 'pwd'){
+        directoryDefinitions.forEach(definition => {
+            consoleBody.appendChild(createConsoleReponse(
+                definition, 
+                [
+                    'standard-text', 
+                    'standard-text-glow'
+                ],
+                2
+                )
+            );
+        })
     }
 
     //=====Blank=====
     else if (input === ''){
         consoleBody.appendChild(document.createElement('br'));
-    }
-
-    //=====Test=====
-    else if (input === 'test'){
-        consoleBody.appendChild(createConsoleReponse(
-            'This is a test', 
-            [
-                'error-text', 
-                'error-text-glow'
-            ]
-            )
-        );
     }
 
     //=====Error=====
@@ -162,12 +171,11 @@ function visibleAfterDelay(elements, time){
     }, (time*1000)) 
 }
 
-
 //Enable input only after initial timeout
 setTimeout(() => {
     textInput.attributes.removeNamedItem('disabled');
     focusText();
-}, 3005);
+}, 4005);
 //=====Delay Functions START=====
 
 //Prevent page refresh when submitting to the console
