@@ -45,7 +45,7 @@ let commands = {
     help: [
         'help: Displays this help screen',
         'ls: Lists possible items to display',
-        'cd: Change the current working directory (supports / and home but not ..)',
+        'cd: Change the current working directory (supports "/" and "home" but not "..")',
         'clear: Clear the terminal'
     ],
     cd: [
@@ -222,9 +222,9 @@ function consoleMain(){
 //=====Display Functions END=====
 
 //=====Delay Functions START=====
-visibleAfterDelay(document.getElementsByClassName('delay-1'), 1)
-visibleAfterDelay(document.getElementsByClassName('delay-2'), 1.5)
-visibleAfterDelay(document.getElementsByClassName('delay-3'), 2)
+visibleAfterDelay(document.getElementsByClassName('delay-1'), 0.5)
+visibleAfterDelay(document.getElementsByClassName('delay-2'), 1.8)
+visibleAfterDelay(document.getElementsByClassName('delay-3'), 2.5)
 visibleAfterDelay(document.getElementsByClassName('delay-4'), 4)
 
 /**
