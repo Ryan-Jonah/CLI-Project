@@ -136,7 +136,7 @@ function focusText(removeFocus = false){
 //Enable input only after initial timeout
 setTimeout(() => {
     textInput.attributes.removeNamedItem('disabled')
-}, 10000);
+}, 2000);
 
 //Prevent page refresh when submitting to the console
 function preventFormOnSubmit(event){
