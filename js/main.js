@@ -1,30 +1,71 @@
 //=====Define HTML Elements=====
-const consoleBody = document.getElementById('console-body')
-const consoleFormInput = document.getElementById('console-input')
+const consoleBody = document.getElementById('console-body');
+const consoleFormInput = document.getElementById('console-input');
 const textInput = document.getElementById('text-input');
+const displayDirectory = document.getElementById('currentDirectory');
 
-//=====Define Output Variables=====
-let commandDefinitions = [
-    'help: displays this help screen',
-    'ls: lists possible items to display'
-]
+//=====Define Directory Tree=====
+let directories = {
+    root: {
+        displayName: 'home',
+        description: 'The root directory of the application',
+        childDirectories: {
+            about: {
+                displayName: 'about',
+                description: 'Displays general information',
+                childDirectories: {
+                    contact: {
+                        displayName: 'contact',
+                        description: 'Contact information',
+                        childDirectories: {}
+                    },
+                }
+            },
+            projects: {
+                displayName: 'projects',
+                description: 'Presents a list of projects',
+                childDirectories: {}
+            },
+            blog: {
+                displayName: 'blog',
+                description: 'Presents a list of blog entries',
+                childDirectories: {}
+            },
 
-let directoryDefinitions = [
-    'about: displays general information',
-    'portfolio: presents a list of projects',
-    'blog: presents a list of blog entries',
-    'contact: presents contact information'
-]
+        }
+    }
+}
+
+//Initialize in root directory
+let currentDirectory = directories.root;
+displayDirectory.innerHTML = currentDirectory.displayName;
+
+//======Define Commands START=====
+let commands = {
+    help: [
+        'help: Displays this help screen',
+        'ls: Lists possible items to display',
+        'cd: Change the current working directory (supports / and home but not ..)',
+        'clear: Clear the terminal'
+    ],
+    cd: [
+        'change directory'
+    ]
+}
+//======Define Commands END=====
 
 //=====Main Function START=====
 function consoleMain(){
 
     //Ensure input is lowercase string
-    let input = String(textInput.value).toLowerCase();
+    let input = String(textInput.value).toLowerCase().trim();
+
+    //Separate command from command flags
+    let inputCommands = input.split(' ');
 
     //Display input
     consoleBody.appendChild(createConsoleReponse(
-        `> ${input}`, 
+        `${displayDirectory.innerHTML} > ${input}`, 
         [
             'standard-text', 
             'standard-text-glow'
@@ -33,12 +74,12 @@ function consoleMain(){
     );
 
     //=====Clear=====
-    if(input === 'clear' || input === 'cls'){
+    if(inputCommands[0] === 'clear' || inputCommands[0] === 'cls'){
         consoleBody.innerHTML = null;
     }
 
     //=====Help=====
-    else if(input === 'help' || input === '--help' || input === '-h'){
+    else if(inputCommands[0] === 'help'){
         consoleBody.appendChild(createConsoleReponse(
             'Welcome to the help menu!', 
             [
@@ -59,7 +100,7 @@ function consoleMain(){
             )
         );
 
-        commandDefinitions.forEach(definition => {
+        commands.help.forEach(definition => {
             consoleBody.appendChild(createConsoleReponse(
                 definition, 
                 [
@@ -73,10 +114,10 @@ function consoleMain(){
     }
 
     //=====List Items=====
-    else if(input === 'ls' || input === 'pwd'){
-        directoryDefinitions.forEach(definition => {
+    else if(inputCommands[0] === 'ls' || inputCommands[0] === 'pwd'){
+        for (const [key, value] of Object.entries(currentDirectory.childDirectories)) {
             consoleBody.appendChild(createConsoleReponse(
-                definition, 
+                `${key} : ${value.description}`, 
                 [
                     'standard-text', 
                     'standard-text-glow'
@@ -84,7 +125,42 @@ function consoleMain(){
                 2
                 )
             );
-        })
+        }
+    }
+
+    //=====Change Directory=====
+    else if(inputCommands[0] === 'cd'){
+        //Check command success
+        let changedDirectory = false;
+
+        //Change to specific directory
+        for (const [key, value] of Object.entries(currentDirectory.childDirectories)){
+            if (inputCommands[1] === key){
+                currentDirectory = currentDirectory.childDirectories[key];
+                displayDirectory.innerHTML += `/${key}`;
+                changedDirectory = true;
+            }
+        }
+
+        //Change to root directory
+        if (inputCommands[1] === '/' || inputCommands[1] === 'home'){
+            currentDirectory = directories.root;
+            displayDirectory.innerHTML = currentDirectory.displayName;
+            changedDirectory = true;
+        }
+        
+        //Directory not changed
+        if (changedDirectory === false)
+            consoleBody.appendChild(createConsoleReponse(
+                `Could not find directory "${inputCommands[1]}"!`,
+                [
+                    'error-text', 
+                    'error-text-glow'
+                ], 
+                2
+                )
+            );
+        
     }
 
     //=====Blank=====
@@ -153,7 +229,7 @@ visibleAfterDelay(document.getElementsByClassName('delay-4'), 4)
 
 /**
  * Make hidden elements visible after given time delay
- * @param {HtmlCollectionOf<Element>} elements collection of elements to show
+ * @param {HtmlCollectionOf<Element>} elements Collection of elements to show
  * @param {time} time Time in seconds
  */
 function visibleAfterDelay(elements, time){
