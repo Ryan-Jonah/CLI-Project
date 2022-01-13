@@ -1,8 +1,13 @@
-
 //=====Define HTML Elements=====
 const consoleBody = document.getElementById('console-body')
 const consoleFormInput = document.getElementById('console-input')
 const textInput = document.getElementById('text-input');
+
+//=====Define Output Variables=====
+let commandDefinitions = [
+    'help: displays this help screen',
+    'ls: lists possible items to display'
+]
 
 //=====Main Function START=====
 function consoleMain(){
@@ -11,25 +16,49 @@ function consoleMain(){
     let input = String(textInput.value).toLowerCase()
 
     //=====Clear=====
-    if(input === 'clear'){
+    if(input === 'clear' || input === 'cls'){
         consoleBody.innerHTML = null;
     }
 
     //=====Help=====
     else if(input === 'help' || input === '--help' || input === '-h'){
         consoleBody.appendChild(createConsoleReponse(
-            `Welcome to the help menu!`, 
+            'Welcome to the help menu!', 
             [
                 'standard-text', 
                 'standard-text-glow'
-            ]
+            ],
+            1
             )
         );
+
+        consoleBody.appendChild(createConsoleReponse(
+            'Below you will find a list of possible commands:', 
+            [
+                'standard-text', 
+                'standard-text-glow'
+            ],
+            2
+            )
+        );
+
+        commandDefinitions.forEach(definition => {
+            consoleBody.appendChild(createConsoleReponse(
+                definition, 
+                [
+                    'standard-text', 
+                    'standard-text-glow'
+                ],
+                2
+                )
+            );
+        })
+
     }
 
     //=====Blank=====
     else if (input === ''){
-        consoleBody.appendChild(document.createElement("br"));
+        consoleBody.appendChild(document.createElement('br'));
     }
 
     //=====Test=====
@@ -47,7 +76,7 @@ function consoleMain(){
     //=====Error=====
     else{
         consoleBody.appendChild(createConsoleReponse(
-            'Invalid command!',
+            `Could not find command "${input}"!`,
             [
                 'error-text', 
                 'error-text-glow'
@@ -103,6 +132,11 @@ function focusText(removeFocus = false){
     }
     else textInput.focus();
 }
+
+//Enable input only after initial timeout
+setTimeout(() => {
+    textInput.attributes.removeNamedItem('disabled')
+}, 10000);
 
 //Prevent page refresh when submitting to the console
 function preventFormOnSubmit(event){
