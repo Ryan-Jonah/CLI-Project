@@ -20,7 +20,7 @@ let directoryDefinitions = [
 function consoleMain(){
 
     //Ensure input is lowercase string
-    let input = String(textInput.value).toLowerCase()
+    let input = String(textInput.value).toLowerCase();
 
     //Display input
     consoleBody.appendChild(createConsoleReponse(
@@ -115,6 +115,7 @@ function consoleMain(){
 
     //Reset prompt
     textInput.value = '';
+    window.scrollTo(0, document.body.scrollHeight);
 }
 //=====Main Function END=====
 
@@ -144,14 +145,6 @@ function consoleMain(){
 }
 //=====Display Functions END=====
 
-//Set or remove focus of the input field
-function focusText(removeFocus = false){
-    if(removeFocus === true){
-        textInput.blur();
-    }
-    else textInput.focus();
-}
-
 //=====Delay Functions START=====
 visibleAfterDelay(document.getElementsByClassName('delay-1'), 1)
 visibleAfterDelay(document.getElementsByClassName('delay-2'), 1.5)
@@ -176,11 +169,19 @@ setTimeout(() => {
     textInput.attributes.removeNamedItem('disabled');
     focusText();
 }, 4005);
-//=====Delay Functions START=====
+//=====Delay Functions END=====
 
 //Prevent page refresh when submitting to the console
+consoleFormInput.addEventListener('submit', preventFormOnSubmit);
+
 function preventFormOnSubmit(event){
-     event.preventDefault(); 
+    event.preventDefault(); 
 } 
 
-consoleFormInput.addEventListener('submit', preventFormOnSubmit);
+//Set or remove focus of the input field
+function focusText(removeFocus = false){
+    if(removeFocus === true){
+        textInput.blur();
+    }
+    else textInput.focus();
+}
