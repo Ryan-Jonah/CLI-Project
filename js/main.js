@@ -143,11 +143,32 @@ function focusText(removeFocus = false){
     else textInput.focus();
 }
 
+//=====Delay Functions START=====
+visibleAfterDelay(document.getElementsByClassName('delay-1'), 1)
+visibleAfterDelay(document.getElementsByClassName('delay-2'), 1.5)
+visibleAfterDelay(document.getElementsByClassName('delay-3'), 2)
+visibleAfterDelay(document.getElementsByClassName('delay-4'), 4)
+
+/**
+ * Make hidden elements visible after given time delay
+ * @param {HtmlCollectionOf<Element>} elements collection of elements to show
+ * @param {time} time Time in seconds
+ */
+function visibleAfterDelay(elements, time){
+    setTimeout(() => {
+        for (let index = 0; index < elements.length; index++) {
+                elements[index].style.visibility = 'visible';
+            }  
+    }, (time*1000)) 
+}
+
+
 //Enable input only after initial timeout
 setTimeout(() => {
     textInput.attributes.removeNamedItem('disabled');
     focusText();
 }, 3005);
+//=====Delay Functions START=====
 
 //Prevent page refresh when submitting to the console
 function preventFormOnSubmit(event){
