@@ -14,11 +14,13 @@
 
     <main id="console">
         <section id="console-body">
-            <p class="text-glow">This is the console body</p>
+            <p class="standard-text standard-text-glow">System operational</p>
+            <br>
+            <p class="standard-text standard-text-glow">type 'help' for more information</p>
         </section>
-        <form id="console-input" onsubmit="return consoleMain()">
-            <span>> </span>
-            <input type="text" id="text-input">
+        <form id="console-input" onsubmit="return consoleMain()" autocomplete="off">
+            <span class="standard-text standard-text-glow">> </span>
+            <input  class="standard-text standard-text-glow" type="text" id="text-input">
         </form>
     </main>
 
