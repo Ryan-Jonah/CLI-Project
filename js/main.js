@@ -15,6 +15,16 @@ function consoleMain(){
     //Ensure input is lowercase string
     let input = String(textInput.value).toLowerCase()
 
+    //Display input
+    consoleBody.appendChild(createConsoleReponse(
+        `> ${input}`, 
+        [
+            'standard-text', 
+            'standard-text-glow'
+        ],
+        )
+    );
+
     //=====Clear=====
     if(input === 'clear' || input === 'cls'){
         consoleBody.innerHTML = null;
@@ -135,8 +145,9 @@ function focusText(removeFocus = false){
 
 //Enable input only after initial timeout
 setTimeout(() => {
-    textInput.attributes.removeNamedItem('disabled')
-}, 3000);
+    textInput.attributes.removeNamedItem('disabled');
+    focusText();
+}, 3005);
 
 //Prevent page refresh when submitting to the console
 function preventFormOnSubmit(event){
