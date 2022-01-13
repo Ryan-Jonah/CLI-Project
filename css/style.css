@@ -2,19 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
 :root{
-    --text-color: #99ff2a;
     --error-color: #F00;
+    --text-color: #99ff2a;
 }
 
 *{
-    font-size: 1.05em;
-    font-family: 'VT323', monospace;
     background-color: #111;
+    font-family: 'VT323', monospace;
+    font-size: 1.05em;
 }
 
 p{
-    margin-block-start: 0;
     margin-block-end: 0;
+    margin-block-start: 0;
 }
 
 .standard-text{
@@ -49,6 +49,7 @@ p{
     
     animation: fadeIn;
     animation-delay: 1s;
+    animation-duration: 3s;
     animation-fill-mode: forwards;
 }
 
@@ -63,29 +64,48 @@ p{
 .delay-3 {
     opacity: 0;
     
-    animation: fadeIn;
+    animation: fadeIn3;
     animation-delay: 2s;
+    animation-duration: 2s;
     animation-fill-mode: forwards;
 }
 
 .delay-4 {
     opacity: 0;
     
-    animation: fadeIn;
+    animation: fadeIn4;
     animation-delay: 2.5s;
+    animation-duration: 1.5s;
     animation-fill-mode: forwards;
 }
 
 .delay-5 {
     opacity: 0;
     
-    animation: fadeIn;
+    animation: fadeIn5;
     animation-delay: 3s;
+    animation-duration: 1s;
     animation-fill-mode: forwards;
 }
 
 
 @keyframes fadeIn {
     from { opacity: 0; }
+    to { opacity: 1; }
+
+}
+
+@keyframes fadeIn3 {
+    from { opacity: 0.6; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeIn4 {
+    from { opacity: 0.7; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeIn5 {
+    from { opacity: 0.8; }
     to { opacity: 1; }
 }
