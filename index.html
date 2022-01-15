@@ -12,7 +12,18 @@
 
 <body onload="focusText()">
 
+    <!-- Display when Javascript is not enabled -->
+    <noscript>
+        <style type="text/css">
+            #console {display:none;}
+        </style>
+        <p class="error-text error-text-glow"> Console load error! </p>
+        <p class="standard-text standard-text-glow"> Press play on tape "Javscript"... </p>
+    </noscript>
+
     <main id="console">
+        
+        <!-- Display -->
         <section id="console-body">
             <p class="standard-text standard-text-glow delay delay-1">Initializing...</p>
             <p class="standard-text standard-text-glow delay delay-2">Boot sequence successful...</p>
@@ -22,10 +33,13 @@
             <br>
             <p class="standard-text standard-text-glow delay delay-4">To begin, start by typing a command, or try typing "help" for more information</p>
         </section>
+
+        <!-- Input -->
         <form id="console-input" onsubmit="return consoleMain()" autocomplete="off">
             <span class="standard-text standard-text-glow delay delay-4"><span id="currentDirectory"></span> > </span>
             <input class="standard-text standard-text-glow delay delay-4" type="text" id="text-input" disabled>
         </form>
+
     </main>
 
     <!-- JS -->

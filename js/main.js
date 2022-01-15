@@ -4,16 +4,19 @@ const consoleFormInput = document.getElementById('console-input');
 const textInput = document.getElementById('text-input');
 const displayDirectory = document.getElementById('currentDirectory');
 
-//=====Define Directory Tree=====
+//=====Define Directory Tree START=====
 let directories = {
     root: {
+        //home
         displayName: 'home',
         description: 'The root directory of the application',
         childDirectories: {
+            //home/about
             about: {
                 displayName: 'about',
                 description: 'Displays general information',
                 childDirectories: {
+                    //home/about/contact
                     contact: {
                         displayName: 'contact',
                         description: 'Contact information',
@@ -21,11 +24,13 @@ let directories = {
                     },
                 }
             },
+            //home/projects
             projects: {
                 displayName: 'projects',
                 description: 'Presents a list of projects',
                 childDirectories: {}
             },
+            //home/blog
             blog: {
                 displayName: 'blog',
                 description: 'Presents a list of blog entries',
@@ -39,18 +44,20 @@ let directories = {
 //Initialize in root directory
 let currentDirectory = directories.root;
 displayDirectory.innerHTML = currentDirectory.displayName;
+//=====Define Directory Tree END=====
 
 //======Define Commands START=====
-let commands = {
+let commandOutput = {
     help: [
         'help: Displays this help screen',
         'ls: Lists possible items to display',
-        'cd: Change the current working directory (supports "/" and "home" but not "..")',
-        'clear: Clear the terminal'
+        'cd: Change the current working directory (supports "/" or "home" but not "..")',
+        'clear: Clear the terminal',
     ],
-    cd: [
-        'change directory'
-    ]
+    about: [],
+    contact: [],
+    projects: [],
+    blog: []    
 }
 //======Define Commands END=====
 
@@ -63,9 +70,9 @@ function consoleMain(){
     //Separate command from command flags
     let inputCommands = input.split(' ');
 
-    //Display input
+    //Display past prompt entries
     consoleBody.appendChild(createConsoleReponse(
-        `${displayDirectory.innerHTML} > ${input}`, 
+        `${displayDirectory.innerHTML} > ${textInput.value}`, 
         [
             'standard-text', 
             'standard-text-glow'
@@ -73,12 +80,12 @@ function consoleMain(){
         )
     );
 
-    //=====Clear=====
+    //==========Clear==========
     if(inputCommands[0] === 'clear' || inputCommands[0] === 'cls'){
         consoleBody.innerHTML = null;
     }
 
-    //=====Help=====
+    //==========Help==========
     else if(inputCommands[0] === 'help'){
         consoleBody.appendChild(createConsoleReponse(
             'Welcome to the help menu!', 
@@ -100,9 +107,9 @@ function consoleMain(){
             )
         );
 
-        commands.help.forEach(definition => {
+        commandOutput.help.forEach(line => {
             consoleBody.appendChild(createConsoleReponse(
-                definition, 
+                line, 
                 [
                     'standard-text', 
                     'standard-text-glow'
@@ -113,7 +120,7 @@ function consoleMain(){
         })
     }
 
-    //=====List Items=====
+    //==========List Items==========
     else if(inputCommands[0] === 'ls' || inputCommands[0] === 'pwd'){
         for (const [key, value] of Object.entries(currentDirectory.childDirectories)) {
             consoleBody.appendChild(createConsoleReponse(
@@ -128,7 +135,7 @@ function consoleMain(){
         }
     }
 
-    //=====Change Directory=====
+    //==========Change Directory==========
     else if(inputCommands[0] === 'cd'){
         //Check command success
         let changedDirectory = false;
@@ -163,12 +170,12 @@ function consoleMain(){
         
     }
 
-    //=====Blank=====
+    //==========Blank==========
     else if (input === ''){
         consoleBody.appendChild(document.createElement('br'));
     }
 
-    //=====Error=====
+    //==========Error==========
     else{
         consoleBody.appendChild(createConsoleReponse(
             `Could not find command "${input}"!`,
@@ -195,6 +202,8 @@ function consoleMain(){
 }
 //=====Main Function END=====
 
+fetchPortfolioContent()
+
 //=====Display Functions START=====
 /**
  * Create a new text node
@@ -218,6 +227,18 @@ function consoleMain(){
     }
     
     return responseContainer;
+}
+
+/**
+ * 
+ * @param {string} className The element to fetch contents from
+ */
+
+//netlify.toml file required on portfolio to bypass CORS policy error on fetch
+function fetchPortfolioContent(){
+    const response = fetch('https://ryanjonah.com/index.html')  
+    .then(response => response.text());
+    response.then(html => console.log(html))
 }
 //=====Display Functions END=====
 

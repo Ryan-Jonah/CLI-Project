@@ -49,8 +49,8 @@ p{
     opacity: 0;
 
     animation: fadeIn;
-    animation-delay: 0s;
     animation-duration: 5s;
+    animation-delay: 0s;
     animation-fill-mode: forwards;
 }
 
