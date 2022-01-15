@@ -1,8 +1,34 @@
+//=====Fetch HTML DOM of Portfolio=====
+const parser = new DOMParser();
+
+const portfolioDomAsync = fetch('https://ryanjonah.com/')
+.then(response => response.text())
+.then(htmlText => {return parser.parseFromString(htmlText, 'text/html')})
+
 //=====Define HTML Elements=====
+
+//Console
 const consoleBody = document.getElementById('console-body');
 const consoleFormInput = document.getElementById('console-input');
 const textInput = document.getElementById('text-input');
 const displayDirectory = document.getElementById('currentDirectory');
+
+//Portfolio (See EOF for class reference)
+
+//Get Project Titles
+let parsedProjectTitles = getInnerHtmlByClassesAsync('console-project-title');
+parsedProjectTitles.then(titles => {
+    titles.forEach(title => {
+        commandOutput.projectTitles.push(title);
+        directories.root.childDirectories.projects.childDirectories[title]
+         = new Object();
+
+        directories.root.childDirectories.projects.childDirectories[title]
+        .description = 'More info pending...'
+
+        console.log(directories.root.childDirectories.projects.childDirectories);
+    });
+})
 
 //=====Define Directory Tree START=====
 let directories = {
@@ -48,15 +74,22 @@ displayDirectory.innerHTML = currentDirectory.displayName;
 
 //======Define Commands START=====
 let commandOutput = {
+    //Help
     help: [
         'help: Displays this help screen',
         'ls: Lists possible items to display',
         'cd: Change the current working directory (supports "/" or "home" but not "..")',
         'clear: Clear the terminal',
     ],
+    //About
     about: [],
     contact: [],
-    projects: [],
+    //Projects
+    projectTitles: [],
+    projectInfo: [],
+    projectGithub: [],
+    projectLive: [],
+    //Blog
     blog: []    
 }
 //======Define Commands END=====
@@ -202,8 +235,6 @@ function consoleMain(){
 }
 //=====Main Function END=====
 
-fetchPortfolioContent()
-
 //=====Display Functions START=====
 /**
  * Create a new text node
@@ -228,19 +259,34 @@ fetchPortfolioContent()
     
     return responseContainer;
 }
+//=====Display Functions END=====
+
+//=====Fetch Functions START=====
 
 /**
- * 
- * @param {string} className The element to fetch contents from
+ * Gathers list of innerHTML content for all of the given classname items
+ * @param {string} className Specifies the class name to search in the DOM
+ * @returns innerHTML string[]
  */
+async function getInnerHtmlByClassesAsync(className){
+    const document = await portfolioDomAsync;
+    const elements = document.getElementsByClassName(className);
 
-//netlify.toml file required on portfolio to bypass CORS policy error on fetch
-function fetchPortfolioContent(){
-    const response = fetch('https://ryanjonah.com/index.html')  
-    .then(response => response.text());
-    response.then(html => console.log(html))
+    let classContentCollection = [];
+    for (let index = 0; index < elements.length; index++) {
+        classContentCollection.push(elements[index].innerHTML);
+    }
+
+    return classContentCollection;
 }
-//=====Display Functions END=====
+// portfolioDomAsync.then(document => {return document.getElementsByClassName('console-project-title')})
+// .then(elements => {
+//     for (let index = 0; index < elements.length; index++) {
+//         console.log(elements[index].innerHTML)        
+//     }
+// });
+//=====Fetch Functions END=====
+
 
 //=====Delay Functions START=====
 visibleAfterDelay(document.getElementsByClassName('delay-1'), 0.5)
@@ -282,3 +328,29 @@ function focusText(removeFocus = false){
     }
     else textInput.focus();
 }
+
+/*
+=====Portfolio DOM Reference=====
+
+-----ABOUT-----
+console-about-title
+console-about-content
+console-about-name
+console-about-email
+console-about-location
+console-about-phone
+console-about-resume
+console-about-github
+console-about-linkedin
+
+-----Portfolio-----
+console-project-title
+console-project-info
+console-project-github
+console-project-live
+
+-----Blog-----
+console-blog-title
+console-blog-abstract
+console-blog-link
+*/
