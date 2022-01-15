@@ -1,11 +1,11 @@
-//=====Fetch HTML DOM of Portfolio=====
+//==========Fetch HTML DOM of Portfolio==========
 const parser = new DOMParser();
 
 const portfolioDomAsync = fetch('https://ryanjonah.com/')
 .then(response => response.text())
 .then(htmlText => {return parser.parseFromString(htmlText, 'text/html')})
 
-//=====Define HTML Elements=====
+//==========Define HTML Elements==========
 
 //Console
 const consoleBody = document.getElementById('console-body');
@@ -19,18 +19,26 @@ const displayDirectory = document.getElementById('currentDirectory');
 let parsedProjectTitles = getInnerHtmlByClassesAsync('console-project-title');
 parsedProjectTitles.then(titles => {
     titles.forEach(title => {
-        commandOutput.projectTitles.push(title);
+
+        //Create new Object
         directories.root.childDirectories.projects.childDirectories[title]
-         = new Object();
+        = new Object();
+
+        // Create new object properties
+        directories.root.childDirectories.projects.childDirectories[title]
+        .childDirectories = new Object();
 
         directories.root.childDirectories.projects.childDirectories[title]
-        .description = 'More info pending...'
+        .displayName = title;
+
+        directories.root.childDirectories.projects.childDirectories[title]
+        .description = 'More info pending...';
 
         console.log(directories.root.childDirectories.projects.childDirectories);
     });
 })
 
-//=====Define Directory Tree START=====
+//==========Define Directory Tree START==========
 let directories = {
     root: {
         //home
@@ -70,9 +78,9 @@ let directories = {
 //Initialize in root directory
 let currentDirectory = directories.root;
 displayDirectory.innerHTML = currentDirectory.displayName;
-//=====Define Directory Tree END=====
+//==========Define Directory Tree END==========
 
-//======Define Commands START=====
+//===========Define Commands START==========
 let commandOutput = {
     //Help
     help: [
@@ -233,9 +241,9 @@ function consoleMain(){
     textInput.value = '';
     window.scrollTo(0, document.body.scrollHeight);
 }
-//=====Main Function END=====
+//==========Main Function END==========
 
-//=====Display Functions START=====
+//==========Display Functions START==========
 /**
  * Create a new text node
  * @param {string} text The text to be displayed
@@ -259,9 +267,20 @@ function consoleMain(){
     
     return responseContainer;
 }
-//=====Display Functions END=====
 
-//=====Fetch Functions START=====
+/**
+ * Creates a name with no special characters or whitespace
+ * @param {string} name Name to be processed 
+ * @returns The filtered name
+ */
+function createDirectoryName(name){
+    return name.replace(RegExp(/\W\ +/), ' ')
+        .replace(RegExp(/ +/), '')
+        .toLowerCase();
+}
+//==========Display Functions END==========
+
+//==========Fetch Functions START==========
 
 /**
  * Gathers list of innerHTML content for all of the given classname items
@@ -274,21 +293,15 @@ async function getInnerHtmlByClassesAsync(className){
 
     let classContentCollection = [];
     for (let index = 0; index < elements.length; index++) {
-        classContentCollection.push(elements[index].innerHTML);
+        classContentCollection.push(createDirectoryName(elements[index].innerHTML))
     }
 
     return classContentCollection;
 }
-// portfolioDomAsync.then(document => {return document.getElementsByClassName('console-project-title')})
-// .then(elements => {
-//     for (let index = 0; index < elements.length; index++) {
-//         console.log(elements[index].innerHTML)        
-//     }
-// });
-//=====Fetch Functions END=====
+//==========Fetch Functions END==========
 
 
-//=====Delay Functions START=====
+//==========Delay Functions START==========
 visibleAfterDelay(document.getElementsByClassName('delay-1'), 0.5)
 visibleAfterDelay(document.getElementsByClassName('delay-2'), 1.8)
 visibleAfterDelay(document.getElementsByClassName('delay-3'), 2.5)
@@ -313,6 +326,10 @@ setTimeout(() => {
     focusText();
 }, 4005);
 //=====Delay Functions END=====
+
+//=====Scroll Functions END=====
+//TODO: Add Scrolling
+//=====Scroll Functions END=====
 
 //Prevent page refresh when submitting to the console
 consoleFormInput.addEventListener('submit', preventFormOnSubmit);
