@@ -43,7 +43,7 @@ getInnerHtmlByClassAsync('console-project-title')
                 
                         //Description
                         directories.root.childDirectories.projects.childDirectories[title]
-                        .description = info[index];
+                        .description = info[index].replace(RegExp(/(<br>)+/), ' ');
                 
                         //Repository link
                         github[index].classList.add('info-text', 'info-text-glow');
@@ -216,7 +216,7 @@ function consoleMain(){
                 consoleBody.appendChild(value.repository);
             }
 
-            if (value.live !== undefined){
+            if (value.live !== undefined && !String(value.live.href).includes('#')){
                 consoleBody.appendChild(value.live);
             }
         }
