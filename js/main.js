@@ -342,7 +342,11 @@ function createDirectoryName(name){
         let newLink = document.createElement('a');
         newLink.href = elements[index].getAttribute('href');
 
+        //Default text
         newLink.innerHTML = title;
+
+        //Set links to open in new tab
+        newLink.setAttribute('target', '_blank');
 
         linkCollection.push(newLink);
     }
