@@ -15,28 +15,57 @@ const displayDirectory = document.getElementById('currentDirectory');
 
 //Portfolio (See EOF for class reference)
 
-//Get Project Titles
-let parsedProjectTitles = getInnerHtmlByClassesAsync('console-project-title');
-parsedProjectTitles.then(titles => {
-    titles.forEach(title => {
+//Get About
+//TODO
 
-        //Create new Object
-        directories.root.childDirectories.projects.childDirectories[title]
-        = new Object();
-
-        // Create new object properties
-        directories.root.childDirectories.projects.childDirectories[title]
-        .childDirectories = new Object();
-
-        directories.root.childDirectories.projects.childDirectories[title]
-        .displayName = title;
-
-        directories.root.childDirectories.projects.childDirectories[title]
-        .description = 'More info pending...';
-
-        console.log(directories.root.childDirectories.projects.childDirectories);
-    });
+//Get Projects
+getInnerHtmlByClassAsync('console-project-title')
+    .then(titles => {
+        getInnerHtmlByClassAsync('console-project-info', false)
+        .then(info => {
+            getHrefByClassAsync('console-project-github')
+            .then(github => {
+                getHrefByClassAsync('console-project-live')
+                .then(live => {
+                    titles.forEach((title, index) => {
+    
+                        //Create new Object
+                        directories.root.childDirectories.projects.childDirectories[title]
+                        = new Object();
+                
+                        // Child directories
+                        directories.root.childDirectories.projects.childDirectories[title]
+                        .childDirectories = new Object();
+                
+                        //Display name
+                        directories.root.childDirectories.projects.childDirectories[title]
+                        .displayName = title;
+                
+                        //Description
+                        directories.root.childDirectories.projects.childDirectories[title]
+                        .description = info[index];
+                
+                        //Repository link
+                        github[index].classList.add('info-text', 'info-text-glow');
+                        github[index].innerHTML = 'github';
+                        directories.root.childDirectories.projects.childDirectories[title]
+                        .repository = github[index];
+                
+                        //Live link
+                        live[index].classList.add('info-text', 'info-text-glow');
+                        live[index].innerHTML = 'site';
+                        directories.root.childDirectories.projects.childDirectories[title]
+                        .live = live[index];
+                
+                        console.log(directories.root.childDirectories.projects.childDirectories);
+                })
+            })
+        })
+    })
 })
+
+//Get Blog
+//TODO
 
 //==========Define Directory Tree START==========
 let directories = {
@@ -162,17 +191,34 @@ function consoleMain(){
     }
 
     //==========List Items==========
-    else if(inputCommands[0] === 'ls' || inputCommands[0] === 'pwd'){
+    else if(inputCommands[0] === 'ls' || inputCommands[0] === 'dir' ){
         for (const [key, value] of Object.entries(currentDirectory.childDirectories)) {
+
+            //Adjust spacing based on number properties present to display
+            let spaceAfterPropertyName = 2
+
+            if (Object.keys(value).length > 3){
+                consoleBody.appendChild(createConsoleReponse('', [], 1));
+                spaceAfterPropertyName = 1
+            } 
+
             consoleBody.appendChild(createConsoleReponse(
                 `${key} : ${value.description}`, 
                 [
                     'standard-text', 
                     'standard-text-glow'
                 ],
-                2
+                spaceAfterPropertyName
                 )
             );
+
+            if (value.repository !== undefined){
+                consoleBody.appendChild(value.repository);
+            }
+
+            if (value.live !== undefined){
+                consoleBody.appendChild(value.live);
+            }
         }
     }
 
@@ -283,20 +329,58 @@ function createDirectoryName(name){
 //==========Fetch Functions START==========
 
 /**
+ * Gathers list of href links for all of the given classname items
+ * @param {string} className Specifies the class name to search in the DOM
+ * @returns List of processed anchor elements
+ */
+ async function getHrefByClassAsync(className, title = 'Link'){
+    const elements = await getElementsByClassNameAsync(className);
+
+    let linkCollection = [];
+    for (let index = 0; index < elements.length; index++) {
+
+        let newLink = document.createElement('a');
+        newLink.href = elements[index].getAttribute('href');
+
+        newLink.innerHTML = title;
+
+        linkCollection.push(newLink);
+    }
+
+    return linkCollection;
+}
+
+ /**
  * Gathers list of innerHTML content for all of the given classname items
  * @param {string} className Specifies the class name to search in the DOM
+ * @param {boolean} directoryName Determines if the result should be parsed whitespace and special characters 
  * @returns innerHTML string[]
  */
-async function getInnerHtmlByClassesAsync(className){
-    const document = await portfolioDomAsync;
-    const elements = document.getElementsByClassName(className);
+async function getInnerHtmlByClassAsync(className, directoryName = true){
+    const elements = await getElementsByClassNameAsync(className);
 
     let classContentCollection = [];
     for (let index = 0; index < elements.length; index++) {
-        classContentCollection.push(createDirectoryName(elements[index].innerHTML))
+        let content = elements[index].innerHTML;
+
+        if (directoryName){
+            content = createDirectoryName(content)
+        }
+        classContentCollection.push(content);
     }
 
     return classContentCollection;
+}
+
+/**
+ * Class used to fetch elements from an external resource
+ * @param {string} className Specifies the class name to search in the DOM
+ * @param {Promise<Document>} DOM A promise resulting in an HTML DOM
+ * @returns A collection of HTML Elements
+ */
+async function getElementsByClassNameAsync(className, DOM = portfolioDomAsync){
+    const document = await DOM;
+    return document.getElementsByClassName(className);
 }
 //==========Fetch Functions END==========
 
@@ -306,6 +390,8 @@ visibleAfterDelay(document.getElementsByClassName('delay-1'), 0.5)
 visibleAfterDelay(document.getElementsByClassName('delay-2'), 1.8)
 visibleAfterDelay(document.getElementsByClassName('delay-3'), 2.5)
 visibleAfterDelay(document.getElementsByClassName('delay-4'), 4)
+
+//TODO: Require async resolutions before proceeding past "Gathering Requirements..."
 
 /**
  * Make hidden elements visible after given time delay
@@ -350,24 +436,24 @@ function focusText(removeFocus = false){
 =====Portfolio DOM Reference=====
 
 -----ABOUT-----
-console-about-title
-console-about-content
-console-about-name
-console-about-email
-console-about-location
-console-about-phone
-console-about-resume
-console-about-github
-console-about-linkedin
+console-about-title    : innerHTML
+console-about-content  : innerHTML
+console-about-name     : innerHTML
+console-about-email    : innerHTML (href contains mailto)
+console-about-location : innerHTML
+console-about-phone    : innerHTML
+console-about-resume   : href
+console-about-github   : href
+console-about-linkedin : href
 
 -----Portfolio-----
-console-project-title
-console-project-info
-console-project-github
-console-project-live
+console-project-title  : innerHTML
+console-project-info   : innerHTML
+console-project-github : href
+console-project-live   : href
 
 -----Blog-----
-console-blog-title
-console-blog-abstract
-console-blog-link
+console-blog-title    : innerHTML
+console-blog-abstract : innerHTML
+console-blog-link     : href
 */
