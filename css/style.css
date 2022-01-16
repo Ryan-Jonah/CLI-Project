@@ -29,6 +29,7 @@ p{
 a{
     color: var(--info-color);
     margin-right: 1em;    
+    text-decoration: none;
 }
 
 a:hover{
