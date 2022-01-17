@@ -1,7 +1,7 @@
 # CLI-Project
 A command line project created using HTML/CSS/JS
 
-<img src="img/demo.png" alt="Console" />
+<img src="img/CLIdemo.png" alt="Console" />
 
 ## Portfolio DOM Classlist Reference
 
