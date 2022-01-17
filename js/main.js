@@ -338,7 +338,7 @@ function consoleMain(){
 
             //Displays directories and their descriptions
             consoleBody.appendChild(createConsoleReponse(
-                `${directory}: `, 
+                `${directory} `, 
                 [
                     directoryStyle[0],
                     directoryStyle[1],
@@ -347,7 +347,7 @@ function consoleMain(){
                 )
             );
 
-            //TODO: Change quichfix for email to support all link descriptions
+            //TODO: Change quicfix for email to support all link descriptions
             if(directory === 'Email'){
                 consoleBody.appendChild(keys.description);
                 continue;
