@@ -26,7 +26,7 @@ const displayDirectory = document.getElementById('currentDirectory');
 */
 getInnerHtmlByClassAsync('console-about-title')
     .then(title => {
-     //Create new Object
+     //Create about item
      directories.root.childDirectories.about.childDirectories[title[0]]
      = new Object();
 
@@ -41,7 +41,9 @@ getInnerHtmlByClassAsync('console-about-title')
             .description = info[0];
         })
 
-    //name
+    //===Contact Information===
+
+    //Create name item
      getInnerHtmlByClassAsync('console-about-name')
         .then(name => {
             directories.root.childDirectories.contact.childDirectories['Name']
@@ -51,7 +53,7 @@ getInnerHtmlByClassAsync('console-about-title')
             .description = name[0];
         })
 
-    //location
+     //Create location item
     getInnerHtmlByClassAsync('console-about-location')
         .then(location => {
             directories.root.childDirectories.contact.childDirectories['Location']
@@ -61,7 +63,7 @@ getInnerHtmlByClassAsync('console-about-title')
             .description = location[0];
         })
 
-    //phone
+     //Create phone item
     getInnerHtmlByClassAsync('console-about-phone')
         .then(phone => {
             directories.root.childDirectories.contact.childDirectories['Phone']
@@ -71,7 +73,7 @@ getInnerHtmlByClassAsync('console-about-title')
             .description = phone[0];
         })
 
-    //email
+     //Create email item
      getHrefByClassAsync('console-about-email')
         .then(emailLink => {
 
@@ -108,7 +110,7 @@ getInnerHtmlByClassAsync('console-project-title')
                 .then(live => {
                     titles.forEach((title, index) => {
     
-                        //Create new Object
+                        //Create new project item
                         directories.root.childDirectories.projects.childDirectories[title]
                         = new Object();
                 
@@ -131,8 +133,12 @@ getInnerHtmlByClassAsync('console-project-title')
                         live[index].innerHTML = '[-> Site]';
                         directories.root.childDirectories.projects.childDirectories[title]
                         .live = live[index];
-                
-                        console.log(directories.root.childDirectories.projects.childDirectories);
+
+                        //Hotfix to remove links: could be better implemented
+                        if(live[index].href === `${window.location.href}#`){
+                            live[index].hidden = true;
+                        }
+
                 })
             })
         })
@@ -144,6 +150,37 @@ console-blog-title    : innerHTML
 console-blog-abstract : innerHTML
 console-blog-link     : href
 */
+getInnerHtmlByClassAsync('console-blog-title')
+    .then(titles => {
+        getInnerHtmlByClassAsync('console-blog-abstract')
+        .then(abstract => {
+            getHrefByClassAsync('console-blog-link')
+            .then(blogLink => {
+                titles.forEach((title, index) => {
+    
+                    //Create new blog item
+                    directories.root.childDirectories.blog.childDirectories[title]
+                    = new Object();
+            
+                    //Display name
+                    directories.root.childDirectories.blog.childDirectories[title]
+                    .displayName = title;
+            
+                    //Blog Description
+                    directories.root.childDirectories.blog.childDirectories[title]
+                    .description = abstract[index].replace(RegExp(/(<br>)+/), ' ');
+            
+                    //Blog link
+                    blogLink[index].classList.add('info-text', 'info-text-glow');
+                    blogLink[index].innerHTML = `[-> ${title}]`;
+                    directories.root.childDirectories.blog.childDirectories[title]
+                    .blogLink = blogLink[index];
+            
+                    console.log(directories.root.childDirectories.blog.childDirectories);
+            })
+        })
+    })
+})
 
 //==========Define Directory Tree START==========
 let directories = {
@@ -254,15 +291,10 @@ function consoleMain(){
             )
         );
 
+        //Iterate over entries in commandOutput collection
         commandOutput.help.forEach(line => {
-            consoleBody.appendChild(createConsoleReponse(
-                line, 
-                [
-                    'standard-text', 
-                    'standard-text-glow'
-                ],
-                2
-                )
+            consoleBody.appendChild(
+                createConsoleReponse(line, ['standard-text', 'standard-text-glow'], 2)
             );
         })
 
