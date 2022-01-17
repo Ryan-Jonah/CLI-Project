@@ -13,15 +13,94 @@ const consoleFormInput = document.getElementById('console-input');
 const textInput = document.getElementById('text-input');
 const displayDirectory = document.getElementById('currentDirectory');
 
-//Portfolio (See EOF for class reference)
+/* -----Fetch About-----
+// console-about-title    : innerHTML
+// console-about-content  : innerHTML
+// console-about-name     : innerHTML
+// console-about-email    : innerHTML (href contains mailto)
+// console-about-location : innerHTML
+// console-about-phone    : innerHTML
+// console-about-resume   : href
+// console-about-github   : href
+// console-about-linkedin : href
+*/
+getInnerHtmlByClassAsync('console-about-title')
+    .then(title => {
+     //Create new Object
+     directories.root.childDirectories.about.childDirectories[title[0]]
+     = new Object();
 
-//Get About
-//TODO
+     //Display name
+     directories.root.childDirectories.about.childDirectories[title[0]]
+     .displayName = title[0];
 
-//Get Projects
+     //Description
+     getInnerHtmlByClassAsync('console-about-content')
+        .then(info => {
+            directories.root.childDirectories.about.childDirectories[title[0]]
+            .description = info[0];
+        })
+
+    //name
+     getInnerHtmlByClassAsync('console-about-name')
+        .then(name => {
+            directories.root.childDirectories.contact.childDirectories['Name']
+            = new Object();
+
+            directories.root.childDirectories.contact.childDirectories['Name']
+            .description = name[0];
+        })
+
+    //location
+    getInnerHtmlByClassAsync('console-about-location')
+        .then(location => {
+            directories.root.childDirectories.contact.childDirectories['Location']
+            = new Object();
+            
+            directories.root.childDirectories.contact.childDirectories['Location']
+            .description = location[0];
+        })
+
+    //phone
+    getInnerHtmlByClassAsync('console-about-phone')
+        .then(phone => {
+            directories.root.childDirectories.contact.childDirectories['Phone']
+            = new Object();
+            
+            directories.root.childDirectories.contact.childDirectories['Phone']
+            .description = phone[0];
+        })
+
+    //email
+     getHrefByClassAsync('console-about-email')
+        .then(emailLink => {
+
+            directories.root.childDirectories.contact.childDirectories['Email']
+            = new Object();
+
+            getInnerHtmlByClassAsync('console-about-email')
+                .then(email => {
+                    emailLink[0].classList.add('info-text', 'info-text-glow', 'text-inline');
+                    emailLink[0].innerHTML = `[-> ${email}]`;
+
+                    directories.root.childDirectories.contact.childDirectories['Email']
+                    .description = emailLink[0];
+                })
+
+        })
+
+})
+
+
+/*-----Fetch Projects-----
+console-project-title  : innerHTML
+console-project-info   : innerHTML
+console-project-github : href
+console-project-live   : href
+*/
 getInnerHtmlByClassAsync('console-project-title')
     .then(titles => {
-        getInnerHtmlByClassAsync('console-project-info', false)
+        getInnerHtmlByClassAsync('console-project-info')
         .then(info => {
             getHrefByClassAsync('console-project-github')
             .then(github => {
@@ -33,10 +112,6 @@ getInnerHtmlByClassAsync('console-project-title')
                         directories.root.childDirectories.projects.childDirectories[title]
                         = new Object();
                 
-                        // Child directories
-                        directories.root.childDirectories.projects.childDirectories[title]
-                        .childDirectories = new Object();
-                
                         //Display name
                         directories.root.childDirectories.projects.childDirectories[title]
                         .displayName = title;
@@ -47,13 +122,13 @@ getInnerHtmlByClassAsync('console-project-title')
                 
                         //Repository link
                         github[index].classList.add('info-text', 'info-text-glow');
-                        github[index].innerHTML = 'github';
+                        github[index].innerHTML = '[-> Github]';
                         directories.root.childDirectories.projects.childDirectories[title]
                         .repository = github[index];
                 
                         //Live link
                         live[index].classList.add('info-text', 'info-text-glow');
-                        live[index].innerHTML = 'site';
+                        live[index].innerHTML = '[-> Site]';
                         directories.root.childDirectories.projects.childDirectories[title]
                         .live = live[index];
                 
@@ -64,8 +139,11 @@ getInnerHtmlByClassAsync('console-project-title')
     })
 })
 
-//Get Blog
-//TODO
+/*-----Fetch Blog-----
+console-blog-title    : innerHTML
+console-blog-abstract : innerHTML
+console-blog-link     : href
+*/
 
 //==========Define Directory Tree START==========
 let directories = {
@@ -77,26 +155,25 @@ let directories = {
             //home/about
             about: {
                 displayName: 'about',
-                description: 'Displays general information',
-                childDirectories: {
-                    //home/about/contact
-                    contact: {
-                        displayName: 'contact',
-                        description: 'Contact information',
-                        childDirectories: {}
-                    },
-                }
+                description: 'Contains general information',
+                childDirectories: {}
             },
             //home/projects
             projects: {
                 displayName: 'projects',
-                description: 'Presents a list of projects',
+                description: 'Directory which contains a list of my personal projects',
                 childDirectories: {}
             },
             //home/blog
             blog: {
                 displayName: 'blog',
                 description: 'Presents a list of blog entries',
+                childDirectories: {}
+            },
+            //home/contact
+            contact: {
+                displayName: 'contact',
+                description: 'Contains contact information',
                 childDirectories: {}
             },
 
@@ -160,8 +237,8 @@ function consoleMain(){
         consoleBody.appendChild(createConsoleReponse(
             'Welcome to the help menu!', 
             [
-                'standard-text', 
-                'standard-text-glow'
+                'info-text', 
+                'info-text-glow'
             ],
             1
             )
@@ -188,37 +265,82 @@ function consoleMain(){
                 )
             );
         })
+
+        //Directory legend
+        consoleBody.appendChild(
+            createConsoleReponse('<==Legend==>', ['standard-text', 'standard-text-glow'])
+        );
+
+        //Directory
+        consoleBody.appendChild(
+            createConsoleReponse('directory', ['directory-text', 'directory-text-glow'])
+        );
+
+        //Standard item
+        consoleBody.appendChild(
+            createConsoleReponse('item', ['title-text', 'title-text-glow'])
+        );
+
+        //Link
+        consoleBody.appendChild(
+            createConsoleReponse('[-> link]', ['info-text', 'info-text-glow'], 2)
+        );
+
     }
 
     //==========List Items==========
     else if(inputCommands[0] === 'ls' || inputCommands[0] === 'dir' ){
-        for (const [key, value] of Object.entries(currentDirectory.childDirectories)) {
+        for (const [directory, keys] of Object.entries(currentDirectory.childDirectories)) {
+
+            //Determine if end of directory tree
+            let directoryStyle = (keys.childDirectories !== undefined) 
+                ? ['directory-text', 'directory-text-glow'] 
+                : ['title-text', 'title-text-glow']
 
             //Adjust spacing based on number properties present to display
             let spaceAfterPropertyName = 2
-
-            if (Object.keys(value).length > 3){
+            if (Object.keys(keys).length > 3){
                 consoleBody.appendChild(createConsoleReponse('', [], 1));
                 spaceAfterPropertyName = 1
             } 
 
+            //Displays directories and their descriptions
             consoleBody.appendChild(createConsoleReponse(
-                `${key} : ${value.description}`, 
+                `${directory}: `, 
                 [
-                    'standard-text', 
-                    'standard-text-glow'
-                ],
-                spaceAfterPropertyName
+                    directoryStyle[0],
+                    directoryStyle[1],
+                    'inline-text'
+                ]
                 )
             );
 
-            if (value.repository !== undefined){
-                consoleBody.appendChild(value.repository);
+            //TODO: Change quichfix for email to support all link descriptions
+            if(directory === 'Email'){
+                consoleBody.appendChild(keys.description);
+                continue;
             }
 
-            if (value.live !== undefined && !String(value.live.href).includes('#')){
-                consoleBody.appendChild(value.live);
-            }
+            //Displays directory description
+            consoleBody.appendChild(createConsoleReponse(
+                keys.description, 
+                [
+                    'standard-text', 
+                    'standard-text-glow',
+                    'inline-text'
+                ],
+                2
+                )
+            );
+
+            //Iterate over and displays directory contents
+            Object.values(keys).forEach(item => {        
+
+                //Hyperlinks
+                if (item instanceof HTMLAnchorElement){
+                    consoleBody.appendChild(consoleBody.appendChild(item));
+                }
+            })
         }
     }
 
@@ -227,11 +349,11 @@ function consoleMain(){
         //Check command success
         let changedDirectory = false;
 
-        //Change to specific directory
-        for (const [key, value] of Object.entries(currentDirectory.childDirectories)){
-            if (inputCommands[1] === key){
-                currentDirectory = currentDirectory.childDirectories[key];
-                displayDirectory.innerHTML += `/${key}`;
+        //Change to specific directory if it contains childDirectories 
+        for (const [directory, keys] of Object.entries(currentDirectory.childDirectories)){
+            if (inputCommands[1] === directory && keys.childDirectories !== undefined){
+                currentDirectory = currentDirectory.childDirectories[directory];
+                displayDirectory.innerHTML += `/${directory}`;
                 changedDirectory = true;
             }
         }
@@ -360,7 +482,7 @@ function createDirectoryName(name){
  * @param {boolean} directoryName Determines if the result should be parsed whitespace and special characters 
  * @returns innerHTML string[]
  */
-async function getInnerHtmlByClassAsync(className, directoryName = true){
+async function getInnerHtmlByClassAsync(className, directoryName = false){
     const elements = await getElementsByClassNameAsync(className);
 
     let classContentCollection = [];
@@ -435,29 +557,3 @@ function focusText(removeFocus = false){
     }
     else textInput.focus();
 }
-
-/*
-=====Portfolio DOM Reference=====
-
------ABOUT-----
-console-about-title    : innerHTML
-console-about-content  : innerHTML
-console-about-name     : innerHTML
-console-about-email    : innerHTML (href contains mailto)
-console-about-location : innerHTML
-console-about-phone    : innerHTML
-console-about-resume   : href
-console-about-github   : href
-console-about-linkedin : href
-
------Portfolio-----
-console-project-title  : innerHTML
-console-project-info   : innerHTML
-console-project-github : href
-console-project-live   : href
-
------Blog-----
-console-blog-title    : innerHTML
-console-blog-abstract : innerHTML
-console-blog-link     : href
-*/
