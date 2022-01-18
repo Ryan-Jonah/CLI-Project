@@ -1,7 +1,8 @@
 //==========Fetch HTML DOM of Portfolio==========
 const parser = new DOMParser();
+const portfolioUrl = 'https://ryanjonah.com/';
 
-const portfolioDomAsync = fetch('https://ryanjonah.com/')
+const portfolioDomAsync = fetch(portfolioUrl)
 .then(response => response.text())
 .then(htmlText => {return parser.parseFromString(htmlText, 'text/html')})
 
@@ -40,6 +41,19 @@ getInnerHtmlByClassAsync('console-about-title')
             directories.root.childDirectories.about.childDirectories[title[0]]
             .description = info[0];
         })
+
+    //Create resume item
+     getHrefByClassAsync('console-about-resume')
+     .then(resumeLink => {
+
+         console.log(resumeLink[0]);
+         resumeLink[0].classList.add('info-text', 'info-text-glow', 'text-inline');
+         resumeLink[0].innerHTML = `[-> Resume]`;
+         resumeLink[0].href = resumeLink[0].href.replace(window.location.href, portfolioUrl)
+
+         directories.root.childDirectories.about.childDirectories[title[0]]
+         .resume = resumeLink[0];
+     })
 
     //===Contact Information===
 
@@ -90,7 +104,6 @@ getInnerHtmlByClassAsync('console-about-title')
                 })
 
         })
-
 })
 
 
