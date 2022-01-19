@@ -159,7 +159,7 @@ getInnerHtmlByClassAsync('console-about-phone')
                 createLink(
                     emailLink[0], 
                     directories.root.childDirectories.contact.childDirectories['Email'].description, 
-                    emailLink[0])
+                    email)
             })
     })
 
@@ -282,7 +282,7 @@ function consoleMain(){
 
         //Directory legend
         consoleBody.appendChild(
-            createConsoleReponse('<==Legend==>', ['standard-text', 'standard-text-glow'])
+            createConsoleReponse('===Legend===', ['standard-text', 'standard-text-glow'])
         );
 
         //Directory
@@ -297,8 +297,12 @@ function consoleMain(){
 
         //Link
         consoleBody.appendChild(
-            createConsoleReponse('[-> link]', ['info-text', 'info-text-glow'], 2)
+            createConsoleReponse('[-> link]', ['info-text', 'info-text-glow'])
         );
+
+        consoleBody.appendChild(
+            createConsoleReponse('============', ['standard-text', 'standard-text-glow'], 2)
+        );                        
 
     }
 
