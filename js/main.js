@@ -7,8 +7,6 @@ const portfolioDomAsync = fetch(portfolioUrl)
 .then(htmlText => {return parser.parseFromString(htmlText, 'text/html')})
 
 //==========Define HTML Elements==========
-
-//Console
 const consoleBody = document.getElementById('console-body');
 const consoleFormInput = document.getElementById('console-input');
 const textInput = document.getElementById('text-input');
@@ -17,95 +15,34 @@ const displayDirectory = document.getElementById('currentDirectory');
 /* -----Fetch About-----
 // console-about-title    : innerHTML
 // console-about-content  : innerHTML
-// console-about-name     : innerHTML
-// console-about-email    : innerHTML (href contains mailto)
-// console-about-location : innerHTML
-// console-about-phone    : innerHTML
 // console-about-resume   : href
 // console-about-github   : href
 // console-about-linkedin : href
+//TODO: Add skills + education/experience section
 */
 getInnerHtmlByClassAsync('console-about-title')
     .then(title => {
-     //Create about item
-     directories.root.childDirectories.about.childDirectories[title[0]]
-     = new Object();
-
-     //Display name
-     directories.root.childDirectories.about.childDirectories[title[0]]
-     .displayName = title[0];
-
-     //Description
      getInnerHtmlByClassAsync('console-about-content')
         .then(info => {
-            directories.root.childDirectories.about.childDirectories[title[0]]
-            .description = info[0];
+            //Create home/about/title[0]
+            createItem(title[0], directories.root.childDirectories.about, info[0]);
         })
 
     //Create resume item
      getHrefByClassAsync('console-about-resume')
      .then(resumeLink => {
 
-         console.log(resumeLink[0]);
-         resumeLink[0].classList.add('info-text', 'info-text-glow', 'text-inline');
-         resumeLink[0].innerHTML = `[-> Resume]`;
-         resumeLink[0].href = resumeLink[0].href.replace(window.location.href, portfolioUrl)
+        //Quickfix to replace local url with portfolio url
+        resumeLink[0].href = resumeLink[0].href.replace(window.location.href, portfolioUrl);
 
-         directories.root.childDirectories.about.childDirectories[title[0]]
-         .resume = resumeLink[0];
+        //Downloan resume
+        createLink(
+            resumeLink[0], 
+            directories.root.childDirectories.about.childDirectories[title[0]], 
+            "Resume"
+            );
      })
-
-    //===Contact Information===
-
-    //Create name item
-     getInnerHtmlByClassAsync('console-about-name')
-        .then(name => {
-            directories.root.childDirectories.contact.childDirectories['Name']
-            = new Object();
-
-            directories.root.childDirectories.contact.childDirectories['Name']
-            .description = name[0];
-        })
-
-     //Create location item
-    getInnerHtmlByClassAsync('console-about-location')
-        .then(location => {
-            directories.root.childDirectories.contact.childDirectories['Location']
-            = new Object();
-            
-            directories.root.childDirectories.contact.childDirectories['Location']
-            .description = location[0];
-        })
-
-     //Create phone item
-    getInnerHtmlByClassAsync('console-about-phone')
-        .then(phone => {
-            directories.root.childDirectories.contact.childDirectories['Phone']
-            = new Object();
-            
-            directories.root.childDirectories.contact.childDirectories['Phone']
-            .description = phone[0];
-        })
-
-     //Create email item
-     getHrefByClassAsync('console-about-email')
-        .then(emailLink => {
-
-            directories.root.childDirectories.contact.childDirectories['Email']
-            = new Object();
-
-            getInnerHtmlByClassAsync('console-about-email')
-                .then(email => {
-                    emailLink[0].classList.add('info-text', 'info-text-glow', 'text-inline');
-                    emailLink[0].innerHTML = `[-> ${email}]`;
-
-                    directories.root.childDirectories.contact.childDirectories['Email']
-                    .description = emailLink[0];
-                })
-
-        })
 })
-
 
 /*-----Fetch Projects-----
 console-project-title  : innerHTML
@@ -124,28 +61,25 @@ getInnerHtmlByClassAsync('console-project-title')
                     titles.forEach((title, index) => {
     
                         //Create new project item
-                        directories.root.childDirectories.projects.childDirectories[title]
-                        = new Object();
-                
-                        //Display name
-                        directories.root.childDirectories.projects.childDirectories[title]
-                        .displayName = title;
-                
-                        //Description
-                        directories.root.childDirectories.projects.childDirectories[title]
-                        .description = info[index].replace(RegExp(/(<br>)+/), ' ');
+                        createItem(
+                            title, 
+                            directories.root.childDirectories.projects, 
+                            info[index].replace(RegExp(/(<br>)+/), ' ')
+                        )
                 
                         //Repository link
-                        github[index].classList.add('info-text', 'info-text-glow');
-                        github[index].innerHTML = '[-> Github]';
-                        directories.root.childDirectories.projects.childDirectories[title]
-                        .repository = github[index];
+                        createLink(
+                            github[index], 
+                            directories.root.childDirectories.projects.childDirectories[title],
+                            'Github'
+                        )
                 
                         //Live link
-                        live[index].classList.add('info-text', 'info-text-glow');
-                        live[index].innerHTML = '[-> Site]';
-                        directories.root.childDirectories.projects.childDirectories[title]
-                        .live = live[index];
+                        createLink(
+                            live[index], 
+                            directories.root.childDirectories.projects.childDirectories[title],
+                            'Live'
+                        )
 
                         //Hotfix to remove links: could be better implemented
                         if(live[index].href === `${window.location.href}#`){
@@ -172,28 +106,61 @@ getInnerHtmlByClassAsync('console-blog-title')
                 titles.forEach((title, index) => {
     
                     //Create new blog item
-                    directories.root.childDirectories.blog.childDirectories[title]
-                    = new Object();
-            
-                    //Display name
-                    directories.root.childDirectories.blog.childDirectories[title]
-                    .displayName = title;
-            
-                    //Blog Description
-                    directories.root.childDirectories.blog.childDirectories[title]
-                    .description = abstract[index].replace(RegExp(/(<br>)+/), ' ');
-            
+                    createItem(
+                        title, 
+                        directories.root.childDirectories.blog, 
+                        abstract[index].replace(RegExp(/(<br>)+/), ' ')
+                    )
+
                     //Blog link
-                    blogLink[index].classList.add('info-text', 'info-text-glow');
-                    blogLink[index].innerHTML = `[-> ${title}]`;
-                    directories.root.childDirectories.blog.childDirectories[title]
-                    .blogLink = blogLink[index];
-            
-                    console.log(directories.root.childDirectories.blog.childDirectories);
+                    createLink(
+                        blogLink[index],
+                        directories.root.childDirectories.blog.childDirectories[title],
+                        title
+                    )      
             })
         })
     })
 })
+
+/*-----Fetch Contact-----
+// console-about-name     : innerHTML
+// console-about-email    : innerHTML (href contains mailto)
+// console-about-location : innerHTML
+// console-about-phone    : innerHTML
+*/
+//Create home/contact/Name
+getInnerHtmlByClassAsync('console-about-name')
+.then(name => {
+    createItem('Name', directories.root.childDirectories.contact, name[0]);
+})
+
+ //Create home/contact/Location
+getInnerHtmlByClassAsync('console-about-location')
+    .then(location => {
+        createItem('Location', directories.root.childDirectories.contact, location[0]);
+    })
+
+ //Create home/contact/Phone
+getInnerHtmlByClassAsync('console-about-phone')
+    .then(phone => {
+        createItem('Phone', directories.root.childDirectories.contact, phone[0]);
+    })
+
+ //Create home/contact/Email
+ getHrefByClassAsync('console-about-email')
+    .then(emailLink => {
+        getInnerHtmlByClassAsync('console-about-email')
+            .then(email => {
+
+                createItem('Email', directories.root.childDirectories.contact, emailLink[0])
+
+                createLink(
+                    emailLink[0], 
+                    directories.root.childDirectories.contact.childDirectories['Email'].description, 
+                    emailLink[0])
+            })
+    })
 
 //==========Define Directory Tree START==========
 let directories = {
@@ -234,6 +201,7 @@ let directories = {
 //Initialize in root directory
 let currentDirectory = directories.root;
 displayDirectory.innerHTML = currentDirectory.displayName;
+
 //==========Define Directory Tree END==========
 
 //===========Define Commands START==========
@@ -494,13 +462,12 @@ function createDirectoryName(name){
 //==========Display Functions END==========
 
 //==========Fetch Functions START==========
-
 /**
  * Gathers list of href links for all of the given classname items
  * @param {string} className Specifies the class name to search in the DOM
  * @returns List of processed anchor elements
  */
- async function getHrefByClassAsync(className, title = 'Link'){
+ async function getHrefByClassAsync(className){
     const elements = await getElementsByClassNameAsync(className);
 
     let linkCollection = [];
@@ -508,12 +475,6 @@ function createDirectoryName(name){
 
         let newLink = document.createElement('a');
         newLink.href = elements[index].getAttribute('href');
-
-        //Default text
-        newLink.innerHTML = title;
-
-        //Set links to open in new tab
-        newLink.setAttribute('target', '_blank');
 
         linkCollection.push(newLink);
     }
@@ -555,6 +516,50 @@ async function getElementsByClassNameAsync(className, DOM = portfolioDomAsync){
 }
 //==========Fetch Functions END==========
 
+//==========Constructor Functions START==========
+/**
+ * Creates a new directory in the directory tree
+ * @param {string} directoryName Name the new directory
+ * @param {object} targetDirectory Specifies the new directory location
+ * @param {boolean} isDirectory Determines the type of item
+ */
+function createItem(itemName, targetDirectory, description = '', isDirectory = false){
+
+    //Remove invalid characters for cd command
+    isDirectory ? itemNameSafe = createDirectoryName(itemName) 
+                : itemNameSafe = itemName;
+
+    //Create only if no duplicates exist
+    if (targetDirectory.childDirectories[itemNameSafe] === undefined)
+    {
+        targetDirectory.childDirectories[itemNameSafe] = new Object();
+        targetDirectory.childDirectories[itemNameSafe].displayName = itemName;
+        targetDirectory.childDirectories[itemNameSafe].description = description;
+
+        if (isDirectory){
+            targetDirectory.childDirectories[itemNameSafe].childDirectories = new Object();    
+        }  
+    }
+}
+
+/**
+ * Creates a new link item
+ * @param {string} linkHref The uri of the link's resource
+ * @param {object} targetDirectory Specifies the new directory location
+ * @param {string} linkText The text to be displayed within the link
+ * @param {boolean} newTab States whether the link should open a new tab
+ */
+function createLink(linkHref, targetDirectory, linkText, newTab = true){
+
+    linkHref.classList.add('info-text', 'info-text-glow', 'text-inline');
+    linkHref.innerHTML = `[-> ${linkText}]`;
+    targetDirectory[linkText] = linkHref;
+
+    if (newTab){
+        linkHref.setAttribute('target', '_blank');
+    }
+}
+//==========Constructor Functions END==========
 
 //==========Delay Functions START==========
 visibleAfterDelay(document.getElementsByClassName('delay-1'), 0.5)
@@ -583,10 +588,6 @@ setTimeout(() => {
     focusText();
 }, 4005);
 //=====Delay Functions END=====
-
-//=====Scroll Functions END=====
-//TODO: Add Scrolling
-//=====Scroll Functions END=====
 
 //Prevent page refresh when submitting to the console
 consoleFormInput.addEventListener('submit', preventFormOnSubmit);
