@@ -1,15 +1,15 @@
 //==========Fetch HTML DOM of Portfolio==========
-const parser = new DOMParser();
+const parser       = new DOMParser();
 const portfolioUrl = 'https://ryanjonah.com/';
 
 const portfolioDomAsync = fetch(portfolioUrl)
-.then(response => response.text())
-.then(htmlText => {return parser.parseFromString(htmlText, 'text/html')})
+    .then(response => response.text())
+    .then(htmlText => {return parser.parseFromString(htmlText, 'text/html')})
 
 //==========Define HTML Elements==========
-const consoleBody = document.getElementById('console-body');
+const consoleBody      = document.getElementById('console-body');
 const consoleFormInput = document.getElementById('console-input');
-const textInput = document.getElementById('text-input');
+const textInput        = document.getElementById('text-input');
 const displayDirectory = document.getElementById('currentDirectory');
 
 /* -----Fetch About-----
@@ -18,7 +18,6 @@ const displayDirectory = document.getElementById('currentDirectory');
 // console-about-resume   : href
 // console-about-github   : href
 // console-about-linkedin : href
-//TODO: Add skills + education/experience section
 */
 getInnerHtmlByClassAsync('console-about-title')
     .then(title => {
@@ -35,13 +34,15 @@ getInnerHtmlByClassAsync('console-about-title')
         //Quickfix to replace local url with portfolio url
         resumeLink[0].href = resumeLink[0].href.replace(window.location.href, portfolioUrl);
 
-        //Downloan resume
+        //Download resume
         createLink(
             resumeLink[0], 
             directories.root.childDirectories.about.childDirectories[title[0]], 
             "Resume"
             );
      })
+
+     //TODO: Add skills + education/experience section
 })
 
 /*-----Fetch Projects-----
@@ -178,13 +179,13 @@ let directories = {
             //home/projects
             projects: {
                 displayName: 'projects',
-                description: 'Directory which contains a list of my personal projects',
+                description: 'Contains links to my personal projects',
                 childDirectories: {}
             },
             //home/blog
             blog: {
                 displayName: 'blog',
-                description: 'Presents a list of blog entries',
+                description: 'Contains my most recent blog entries',
                 childDirectories: {}
             },
             //home/contact
