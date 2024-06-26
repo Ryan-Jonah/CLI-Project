@@ -1,6 +1,6 @@
 //==========Fetch HTML DOM of Portfolio==========
 const parser       = new DOMParser();
-const portfolioUrl = 'https://ryanjonah.com/';
+const portfolioUrl = 'https://ryanjonah.netlify.app/';
 
 const portfolioDomAsync = fetch(portfolioUrl)
     .then(response => response.text())
@@ -253,6 +253,17 @@ function consoleMain(){
 
     //==========Help==========
     else if(inputCommands[0] === 'help'){
+
+        consoleBody.appendChild(createConsoleReponse(
+            '==================================================================', 
+            [
+                'standard-text', 
+                'standard-text-glow'
+            ],
+            0
+            )
+        );
+
         consoleBody.appendChild(createConsoleReponse(
             'Welcome to the help menu!', 
             [
@@ -282,7 +293,7 @@ function consoleMain(){
 
         //Directory legend
         consoleBody.appendChild(
-            createConsoleReponse('===Legend===', ['standard-text', 'standard-text-glow'])
+            createConsoleReponse('==============================Legend==============================', ['standard-text', 'standard-text-glow'])
         );
 
         //Directory
@@ -297,11 +308,11 @@ function consoleMain(){
 
         //Link
         consoleBody.appendChild(
-            createConsoleReponse('[-> link]', ['info-text', 'info-text-glow'])
+            createConsoleReponse('[-> link] (Clickable)', ['info-text', 'info-text-glow'])
         );
 
         consoleBody.appendChild(
-            createConsoleReponse('============', ['standard-text', 'standard-text-glow'], 2)
+            createConsoleReponse('==================================================================', ['standard-text', 'standard-text-glow'], 2)
         );                        
 
     }
